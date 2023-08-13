@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+void bfs(const vector<vector<int>>& graph, vector<bool>& visited, int start) {
+    queue<int> q;
+    q.push(start);
+    visited[start] = true;
+
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        cout << u << " "; // Display BFS traversal order
+
+        for (int v : graph[u]) {
+            if (!visited[v]) {
+                q.push(v);
+                visited[v] = true;
+            }
+        }
+    }
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m; // Number of vertices and edges
+
+    vector<vector<int>> graph(n);
+
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v; // Edge from u to v
+        graph[u].push_back(v);
+        graph[v].push_back(u); // Assuming undirected graph
+    }
+
+    int startNode;
+    cin >> startNode;
+
+    vector<bool> visited(n, false);
+
+    cout << "BFS Traversal order starting from node " << startNode << ":" << endl;
+    bfs(graph, visited, startNode);
+
+    return 0;
+}
