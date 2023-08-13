@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Edge {
+    int from, to, weight;
+};
+
+vector<Edge> kruskalMST(vector<Edge>& edges, int n) {
+    sort(edges.begin(), edges.end(), [](const Edge& a, const Edge& b) {
+        return a.weight < b.weight;
+    });
+
+    vector<Edge> mst;
+    vector<int> parent(n);
+
+    for (int i = 0; i < n; ++i) {
+        parent[i] = i;
+    }
+
+    for (const Edge& edge : edges) {
+        int rootX = parent[edge.from];
+        int rootY = parent[edge.to];
+
+        if (rootX != rootY) {
+            mst.push_back(edge);
+
+            for (int i = 0; i < n; ++i) {
+                if (parent[i] == rootY) {
+                    parent[i] = rootX;
+                }
+            }
+        }
+    }
+
+    return mst;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<Edge> edges(m);
+
+    for (int i = 0; i < m; ++i) {
+        cin >> edges[i].from >> edges[i].to >> edges[i].weight;
+    }
+
+    vector<Edge> minimumSpanningTree = kruskalMST(edges, n);
+
+    cout << "Minimum Spanning Tree Edges:" << endl;
+    for (const Edge& edge : minimumSpanningTree) {
+        cout << edge.from << " - " << edge.to << " : " << edge.weight << endl;
+    }
+
+    return 0;
+}
