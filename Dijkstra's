@@ -1,0 +1,65 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+
+using namespace std;
+
+struct Edge {
+    int to, weight;
+};
+
+typedef pair<int, int> pii;  
+
+vector<int> dijkstra(const vector<vector<Edge>>& graph, int start) {
+    int n = graph.size();
+    vector<int> dist(n, INT_MAX);
+    
+    priority_queue<pii, vector<pii>, greater<pii>> pq;  
+    pq.push({0, start});
+    dist[start] = 0;
+
+    while (!pq.empty()) {
+        int u = pq.top().second;
+        int d = pq.top().first;
+        pq.pop();
+
+        if (d > dist[u]) continue;
+
+        for (const Edge& edge : graph[u]) {
+            int v = edge.to, weight = edge.weight;
+            if (dist[u] + weight < dist[v]) {
+                dist[v] = dist[u] + weight;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+
+    return dist;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<Edge>> graph(n);
+
+    for (int i = 0; i < m; ++i) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        graph[u].push_back({v, w});
+        graph[v].push_back({u, w}); // Assuming the graph is undirected
+    }
+
+    int startVertex;
+    cin >> startVertex;
+
+    vector<int> shortestDistances = dijkstra(graph, startVertex);
+
+    cout << "Shortest Distances from vertex " << startVertex << ":" << endl;
+    for (int i = 0; i < n; ++i) {
+        cout << "Vertex " << i << ": " << shortestDistances[i] << endl;
+    }
+
+    return 0;
+}
